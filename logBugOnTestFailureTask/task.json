@@ -1,0 +1,30 @@
+{
+    "id": "ada09bc4-efaf-4868-ad79-309cc44d91a4",
+    "name": "LogBugOnTestFailure",
+    "friendlyName": "Log Bug On Test Failure",
+    "description": "Logs bug on test case failure",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Jiwanjyoti Senapati",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Log Bug on test case failure",
+    "inputs": [
+        {
+            "name": "testresultspath",
+            "type": "filePath",
+            "label": "Test Results Path",
+            "defaultValue": "$(System.DefaultWorkingDirectory)/**/*.trx",
+            "required": true,
+            "helpMarkDown": "Enter path to the test results file"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "manifestVersion": 1,
+    "id": "log-bug-on-test-case-failure",
+    "name": "Log Bug On Test Case Failure",
+    "version": "0.0.1",
+    "publisher": "Jiwan",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],    
+    "description": "This extension logs a bug when a test case fails on your pipeline.",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "icons": {
+        "default": "extension-icon.png"        
+    },
+    "files": [
+        {
+            "path": "logBugOnTestFailureTask"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "log-bug-on-test-case-failure-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "logBugOnTestFailureTask"
+            }
+        }
+    ]
+}
