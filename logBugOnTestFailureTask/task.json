@@ -26,5 +26,8 @@
         "Node": {
             "target": "index.js"
         }
+    },
+    "messages": {
+        "JS_InvalidFilePathTrx": "Invalid file path '%s'. A path to a .trx file is required."
     }
 }
