@@ -34,18 +34,6 @@ async function run() {
                 tl.debug("Found multiple matching file. Used : " + files[0]);
             }
 
-            // Debug lines - remove these
-            let s = tl.getVariables();
-            console.log("All Variables :")
-            console.log(JSON.stringify(s));
-
-            console.log(tl.getVariable("SYSTEM_ACCESSTOKEN"));
-            console.log(tl.getVariable("System.TeamFoundationCollectionUri"));
-            console.log(tl.getVariable("System.TeamProjectId"));
-            console.log(tl.getVariable("System.AccessToken"));
-            console.log(tl.getVariable("System.TeamProject"));
-
-            // End Debug lines
             let visualStudioTestParserUtility = new VisualStudioTestParserUtility();
             await visualStudioTestParserUtility.findTestFailures(files[0]);
           });

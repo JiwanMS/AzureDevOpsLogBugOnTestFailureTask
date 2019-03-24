@@ -38,7 +38,6 @@ function run() {
                     if (files.length > 1) {
                         tl.debug("Found multiple matching file. Used : " + files[0]);
                     }
-                    
                     let visualStudioTestParserUtility = new VisualStudioTestParserUtility_1.VisualStudioTestParserUtility();
                     yield visualStudioTestParserUtility.findTestFailures(files[0]);
                 });

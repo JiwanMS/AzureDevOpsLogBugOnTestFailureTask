@@ -5,7 +5,7 @@ import { AzureDevOpsWorkItemUtility } from './AzureDevOpsWorkItemUtility';
 
 export class VisualStudioTestParserUtility {
     public async findTestFailures(testResultsPath: string) : Promise<any> {
-        var parser = new xml2js.Parser();
+        var parser = new xml2js.Parser({explicitArray : false});
 
         fs.readFile(testResultsPath, async function(err, data) {
             if(err) {
@@ -19,14 +19,12 @@ export class VisualStudioTestParserUtility {
                     tl.setResult(tl.TaskResult.Failed, 'Error : ' + err);
                     return;
                 }
-
+                console.log(JSON.stringify(result));
                 let azureDevOpsWorkItemUtility = new AzureDevOpsWorkItemUtility();
-                result.TestRun.Results.forEach((element: any) => {
-                    element.UnitTestResult.forEach(async (unittestresult: any) => {
-                        if(unittestresult.$.outcome == "Failed") {
-                            await azureDevOpsWorkItemUtility.logBug(unittestresult.$.testName + unittestresult.$.testId);
-                        }
-                    });
+                result.TestRun.Results.UnitTestResult.forEach(async (unittestresult: any) => {
+                    if(unittestresult.$.outcome == "Failed") {
+                        await azureDevOpsWorkItemUtility.logBug(unittestresult.$.testName, unittestresult.Output.ErrorInfo.Message);
+                    }
                 });
                 
                 console.log(JSON.stringify(returnValue));

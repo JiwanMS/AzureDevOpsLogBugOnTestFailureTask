@@ -4,4 +4,6 @@ logBugOnTestFailureTask/package-lock.json
 *.vsix
 .taskkey
 logBugOnTestFailureTask/.taskkey
-.map
+*.map
+logBugOnTestFailureTask/.taskkey
+*.js

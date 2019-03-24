@@ -15,7 +15,7 @@ const AzureDevOpsWorkItemUtility_1 = require("./AzureDevOpsWorkItemUtility");
 class VisualStudioTestParserUtility {
     findTestFailures(testResultsPath) {
         return __awaiter(this, void 0, void 0, function* () {
-            var parser = new xml2js.Parser();
+            var parser = new xml2js.Parser({ explicitArray: false });
             fs.readFile(testResultsPath, function (err, data) {
                 return __awaiter(this, void 0, void 0, function* () {
                     if (err) {
@@ -29,14 +29,13 @@ class VisualStudioTestParserUtility {
                                 tl.setResult(tl.TaskResult.Failed, 'Error : ' + err);
                                 return;
                             }
+                            console.log(JSON.stringify(result));
                             let azureDevOpsWorkItemUtility = new AzureDevOpsWorkItemUtility_1.AzureDevOpsWorkItemUtility();
-                            result.TestRun.Results.forEach((element) => {
-                                element.UnitTestResult.forEach((unittestresult) => __awaiter(this, void 0, void 0, function* () {
-                                    if (unittestresult.$.outcome == "Failed") {
-                                        yield azureDevOpsWorkItemUtility.logBug(unittestresult.$.testName + unittestresult.$.testId);
-                                    }
-                                }));
-                            });
+                            result.TestRun.Results.UnitTestResult.forEach((unittestresult) => __awaiter(this, void 0, void 0, function* () {
+                                if (unittestresult.$.outcome == "Failed") {
+                                    yield azureDevOpsWorkItemUtility.logBug(unittestresult.$.testName, unittestresult.Output.ErrorInfo.Message);
+                                }
+                            }));
                             console.log(JSON.stringify(returnValue));
                             return returnValue;
                         });

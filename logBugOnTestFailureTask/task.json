@@ -2,24 +2,95 @@
     "id": "ada09bc4-efaf-4868-ad79-309cc44d91a4",
     "name": "LogBugOnTestFailure",
     "friendlyName": "Log Bug On Test Failure",
-    "description": "Logs bug on test case failure",
+    "description": "This task can log bugs when test cases fails",
     "helpMarkDown": "",
     "category": "Utility",
     "author": "Jiwanjyoti Senapati",
     "version": {
         "Major": 0,
         "Minor": 1,
-        "Patch": 0
+        "Patch": 13
     },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
     "instanceNameFormat": "Log Bug on test case failure",
     "inputs": [
         {
             "name": "testresultspath",
             "type": "filePath",
-            "label": "Test Results Path",
+            "label": "Test Results Path (*.trx)",
             "defaultValue": "$(System.DefaultWorkingDirectory)/**/*.trx",
             "required": true,
             "helpMarkDown": "Enter path to the test results file"
+        },
+        {
+            "name": "workItemType",
+            "type": "pickList",
+            "label": "WorkItem Type",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The type of workitems to create",
+            "properties": {
+                "DisableManageLink": "True",
+                "EditableOptions": "False",
+                "MultiSelectFlatList": "False"
+            }
+        },
+        {
+            "name": "workItemPrefix",
+            "type": "string",
+            "label": "Workitem Title Prefix",
+            "defaultValue": "Test Case Failed : ",
+            "required": true,
+            "helpMarkDown": "The work item title prefix.",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "workItemTag",
+            "type": "string",
+            "label": "Workitem Tag",
+            "defaultValue": "TestFailureOnPipeline",
+            "required": true,
+            "helpMarkDown": "The work item tag",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "updateAssignedTo",
+            "type": "pickList",
+            "label": "Update 'Assigned To'",
+            "defaultValue": "Never",
+            "required": true,
+            "helpMarkDown": "Update the 'Assigned To' field of the workitem.",
+            "options": {
+                "Never": "Never",
+                "Always": "Always"
+            }
+        },
+        {
+            "name": "assignedTo",
+            "type": "string",
+            "label": "Assign to",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "updateAssignedTo != Never",
+            "helpMarkDown": "The user to assign the workitem to.",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        }
+    ],
+    "sourceDefinitions": [
+        {
+            "target": "workItemType",
+            "endpoint": "/$(system.teamProject)/_apis/wit/workItemTypes?api-version=1.0",
+            "selector": "jsonpath:$.value[*].name",
+            "authKey": "tfs:teamfoundation"
         }
     ],
     "execution": {

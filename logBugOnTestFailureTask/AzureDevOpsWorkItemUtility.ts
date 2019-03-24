@@ -7,8 +7,9 @@ import { JsonPatchDocument, JsonPatchOperation, Operation } from "azure-devops-n
 import { WorkItemExpand, WorkItem, WorkItemField, WorkItemRelation, QueryHierarchyItem } from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
 
 export class AzureDevOpsWorkItemUtility {
-    public async logBug(bugTitle: string) {
+    public async logBug(testName: string, errorInfo: string) {
         try{
+            const title = tl.getInput('workItemPrefix') + testName;
             const vstsWebApi: WebApi = this.getVstsWebApi();
             console.log('Get WorkItemTrackingApi');
             const workItemTrackingClient: IWorkItemTrackingApi = await vstsWebApi.getWorkItemTrackingApi();
@@ -17,10 +18,34 @@ export class AzureDevOpsWorkItemUtility {
             patchOperations.push({
                 "op": Operation.Add,
                 "path": "/fields/System.Title",
-                "value": bugTitle
+                "value": title
             });
+
+            const assignedTo = tl.getInput('assignedTo');
+            if(assignedTo) {
+                patchOperations.push({
+                    "op": Operation.Add,
+                    "path": "/fields/System.AssignedTo",
+                    "value": assignedTo
+                });
+            }
+
+            patchOperations.push({
+                "op": Operation.Add,
+                "path": "/fields/System.Tags",
+                "value": tl.getInput('workItemTag')
+            });
+
+            let description = title + ". Error Message : " + errorInfo;
+            patchOperations.push({
+                "op": Operation.Add,
+                "path": "/fields/System.Description",
+                "value": description
+            });
+
             const document : JsonPatchDocument = patchOperations;
-            const workitem = await workItemTrackingClient.createWorkItem(null, document, tl.getVariable("System.TeamProjectId"), "Bug");
+            const workItemType = tl.getInput('workItemType');
+            const workitem = await workItemTrackingClient.createWorkItem(null, document, tl.getVariable("System.TeamProjectId"), workItemType);
             console.log(JSON.stringify(workitem));
         }
         catch (error) {

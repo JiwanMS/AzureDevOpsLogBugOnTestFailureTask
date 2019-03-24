@@ -12,9 +12,10 @@ const tl = require("azure-pipelines-task-lib/task");
 const WebApi_1 = require("azure-devops-node-api/WebApi");
 const VSSInterfaces_1 = require("azure-devops-node-api/interfaces/common/VSSInterfaces");
 class AzureDevOpsWorkItemUtility {
-    logBug(bugTitle) {
+    logBug(testName, errorInfo) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const title = tl.getInput('workItemPrefix') + testName;
                 const vstsWebApi = this.getVstsWebApi();
                 console.log('Get WorkItemTrackingApi');
                 const workItemTrackingClient = yield vstsWebApi.getWorkItemTrackingApi();
@@ -22,38 +23,36 @@ class AzureDevOpsWorkItemUtility {
                 patchOperations.push({
                     "op": VSSInterfaces_1.Operation.Add,
                     "path": "/fields/System.Title",
-                    "value": bugTitle
+                    "value": title
+                });
+                const assignedTo = tl.getInput('assignedTo');
+                if (assignedTo) {
+                    patchOperations.push({
+                        "op": VSSInterfaces_1.Operation.Add,
+                        "path": "/fields/System.AssignedTo",
+                        "value": assignedTo
+                    });
+                }
+                patchOperations.push({
+                    "op": VSSInterfaces_1.Operation.Add,
+                    "path": "/fields/System.Tags",
+                    "value": tl.getInput('workItemTag')
+                });
+                let description = title + ". Error Message : " + errorInfo;
+                patchOperations.push({
+                    "op": VSSInterfaces_1.Operation.Add,
+                    "path": "/fields/System.Description",
+                    "value": description
                 });
                 const document = patchOperations;
-                const workitem = yield workItemTrackingClient.createWorkItem(null, document, tl.getVariable("System.TeamProjectId"), "Bug");
+                const workItemType = tl.getInput('workItemType');
+                const workitem = yield workItemTrackingClient.createWorkItem(null, document, tl.getVariable("System.TeamProjectId"), workItemType);
                 console.log(JSON.stringify(workitem));
             }
             catch (error) {
-                console.log('Caught an error in main: ' + error);
+                console.log('Caught an error while creating the work item: ' + error);
                 tl.setResult(tl.TaskResult.Failed, error);
             }
-            // // let teamFoundationCollectionUri = tl.getVariable("System.TeamFoundationCollectionUri");
-            // // let teamProjectId = tl.getVariable("System.TeamProjectId");
-            // // let requestUrl = teamFoundationCollectionUri + teamProjectId + "/_apis/wit/workitems/$Bug?api-version=5.0&bypassRules=true";
-            // // let requestBody = new Array<any>();
-            // // requestBody.push({op: "add", "path": "/fields/System.Title", value: bugTitle});
-            // // request.post(requestUrl, {
-            // //     'auth': {
-            // //       'bearer': tl.getVariable("System.AccessToken")
-            // //     },
-            // //     'body': JSON.stringify(requestBody),
-            // //     'headers': {
-            // //         'content-type' : 'application/json',
-            // //         'Authorization' : 'Basic '
-            // //     }
-            // //   })
-            // //   .on('response', function(response) {
-            // //     console.log(response.statusCode);
-            // //     console.log(JSON.stringify(response));
-            // //   })
-            // //   .on('error', function(error){
-            // //       console.log(error);
-            // //   });
         });
     }
     getVstsWebApi() {

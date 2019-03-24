@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "log-bug-on-test-case-failure",
     "name": "Log Bug On Test Case Failure",
-    "version": "0.0.12",
+    "version": "0.0.16",
     "publisher": "Jiwan",
     "targets": [
         {
