@@ -1,3 +1,7 @@
 .vscode/launch.json
 logBugOnTestFailureTask/.taskkey
 logBugOnTestFailureTask/package-lock.json
+*.vsix
+.taskkey
+logBugOnTestFailureTask/.taskkey
+.map

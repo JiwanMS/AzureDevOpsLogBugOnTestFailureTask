@@ -25,6 +25,7 @@ function run() {
             }
             glob(testResultsPath, function (er, files) {
                 return __awaiter(this, void 0, void 0, function* () {
+                    console.log("Test Log: ");
                     if (er) {
                         tl.setResult(tl.TaskResult.Failed, 'Error : ' + er);
                         return;
@@ -37,9 +38,9 @@ function run() {
                     if (files.length > 1) {
                         tl.debug("Found multiple matching file. Used : " + files[0]);
                     }
+                    
                     let visualStudioTestParserUtility = new VisualStudioTestParserUtility_1.VisualStudioTestParserUtility();
-                    yield visualStudioTestParserUtility.findTestFailures(testResultsPath);
-                    console.log('Found files : ' + JSON.stringify(files));
+                    yield visualStudioTestParserUtility.findTestFailures(files[0]);
                 });
             });
         }
