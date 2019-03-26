@@ -7,3 +7,4 @@ logBugOnTestFailureTask/.taskkey
 *.map
 logBugOnTestFailureTask/.taskkey
 *.js
+logBugOnTestFailureTask/node_modules

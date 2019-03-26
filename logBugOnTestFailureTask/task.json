@@ -39,6 +39,19 @@
             }
         },
         {
+            "name": "iterationPath",
+            "type": "pickList",
+            "label": "Iteration Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The iteration path to create the work item in.",
+            "properties": {
+                "DisableManageLink": "True",
+                "EditableOptions": "False",
+                "MultiSelectFlatList": "False"
+            }
+        },
+        {
             "name": "workItemPrefix",
             "type": "string",
             "label": "Workitem Title Prefix",
@@ -90,6 +103,12 @@
             "target": "workItemType",
             "endpoint": "/$(system.teamProject)/_apis/wit/workItemTypes?api-version=1.0",
             "selector": "jsonpath:$.value[*].name",
+            "authKey": "tfs:teamfoundation"
+        },
+        {
+            "target": "iterationPath",
+            "endpoint": "/$(system.teamProject)/_apis/wit/classificationnodes?$depth=2&api-version=5.0",
+            "selector": "jsonpath:$.value[*].children[*].path",
             "authKey": "tfs:teamfoundation"
         }
     ],
